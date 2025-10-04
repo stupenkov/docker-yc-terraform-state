@@ -1,2 +1,44 @@
-# docker-yc-terraform-state
-Creates a basic infrastructure for storing terraform state
+# Docker образ для работы с Yandex Cloud и Terraform
+
+Данный Docker образ позволяет управлять инфраструктурой Yandex Cloud с помощью Terraform в изолированной среде без необходимости установки Terraform и YC CLI на локальную машину.
+
+## Сборка образа
+
+```bash
+docker build -t yc-terraform .
+```
+
+## Использование
+
+Образ автоматически запрашивает необходимые параметры при запуске:
+
+1. **OAuth токен Yandex Cloud** - токен для аутентификации в облаке
+2. **Cloud ID** - идентификатор облака
+3. **Folder ID** - идентификатор каталога
+4. **Зона доступности** - зона, в которой будут создаваться ресурсы (по умолчанию ru-central1-a)
+
+### Запуск контейнера
+
+```bash
+docker run --rm -it yc-terraform
+```
+
+### Запуск с передачей аргументов Terraform
+
+```bash
+docker run --rm -it yc-terraform -auto-approve
+```
+
+## Особенности
+
+- Основан на образе `stupean/yandex-terraform:latest`
+- Автоматическая инициализация Terraform при запуске
+- Интерактивный ввод всех необходимых переменных
+- Поддержка всех стандартных аргументов Terraform
+- Изолированная среда выполнения без зависимости от локальной установки инструментов
+
+## Структура проекта
+
+- `Dockerfile` - файл сборки образа
+- `entrypoint.sh` - скрипт инициализации и запуска
+- `terraform/` - директория с конфигурацией Terraform
