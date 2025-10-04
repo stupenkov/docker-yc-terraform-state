@@ -1,44 +1,37 @@
-# Docker образ для работы с Yandex Cloud и Terraform
+# Docker image for working with Yandex Cloud and Terraform
 
-Данный Docker образ позволяет управлять инфраструктурой Yandex Cloud с помощью Terraform в изолированной среде без необходимости установки Terraform и YC CLI на локальную машину.
+This Docker image allows you to manage Yandex Cloud infrastructure using Terraform in an isolated environment without the need to install Terraform and YC CLI on your local machine.
 
-## Сборка образа
-
-```bash
-docker build -t yc-terraform .
-```
-
-## Использование
-
-Образ автоматически запрашивает необходимые параметры при запуске:
-
-1. **OAuth токен Yandex Cloud** - токен для аутентификации в облаке
-2. **Cloud ID** - идентификатор облака
-3. **Folder ID** - идентификатор каталога
-4. **Зона доступности** - зона, в которой будут создаваться ресурсы (по умолчанию ru-central1-a)
-
-### Запуск контейнера
+## Building the image
 
 ```bash
-docker run --rm -it yc-terraform
+docker build -t yc-terraform-state .
 ```
 
-### Запуск с передачей аргументов Terraform
+## Usage
+
+The image automatically requests the necessary parameters when launched:
 
 ```bash
-docker run --rm -it yc-terraform -auto-approve
+docker run --rm -it yc-terraform-state
 ```
 
-## Особенности
+1. **Yandex Cloud OAuth token** - authentication token for the cloud
+2. **organization_id** - Yandex Cloud Organization ID
+3. **billing_account_id** - Yandex Cloud Billing Account ID
+4. **cloud_name** - name for your cloud infrastructure
+5. **Availability zone** - zone where resources will be created (default ru-central1-a)
 
-- Основан на образе `stupean/yandex-terraform:latest`
-- Автоматическая инициализация Terraform при запуске
-- Интерактивный ввод всех необходимых переменных
-- Поддержка всех стандартных аргументов Terraform
-- Изолированная среда выполнения без зависимости от локальной установки инструментов
+## Features
 
-## Структура проекта
+- Based on the `stupean/yandex-terraform:latest` image
+- Automatic Terraform initialization on startup
+- Interactive input of all required variables
+- Support for all standard Terraform arguments
+- Isolated execution environment without dependency on local tool installation
 
-- `Dockerfile` - файл сборки образа
-- `entrypoint.sh` - скрипт инициализации и запуска
-- `terraform/` - директория с конфигурацией Terraform
+## Project structure
+
+- `Dockerfile` - image build file
+- `entrypoint.sh` - initialization and startup script
+- `terraform/` - directory with Terraform configuration
