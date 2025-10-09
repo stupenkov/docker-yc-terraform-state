@@ -1,5 +1,5 @@
 variable "organization_id" {
-  description = "Yandex Cloud Organization ID"
+  description = "Yandex Cloud Organization  ID"
   type        = string
   default     = "bpflh1nomhlsgkpkqdgk"
   validation {
