@@ -27,3 +27,9 @@ variable "cloud_name" {
     error_message = "cloud_name must not be empty and must match pattern: ^[a-z][-a-z0-9]{0,61}[a-z0-9]$"
   }
 }
+
+variable "environments" {
+  description = "A list of environments for creating directories and service accounts"
+  type        = list(string)
+  default     = ["test", "prod"]
+}
