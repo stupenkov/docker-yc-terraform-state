@@ -19,7 +19,8 @@
       "extensions": [
         "rooveterinaryinc.roo-cline",
         "ms-azuretools.vscode-containers",
-        "hashicorp.terraform"
+        "hashicorp.terraform",
+        "eamodio.gitlens"
       ]
     }
   }
