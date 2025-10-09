@@ -23,7 +23,7 @@ variable "cloud_name" {
   type        = string
   default     = "infrastructure" # You can change this to your cloud name
   validation {
-    condition     = length(var.cloud_name) > 0
-    error_message = "cloud_name must not be empty"
+    condition     = length(var.cloud_name) > 0 && can(regex("^[a-z][-a-z0-9]{0,61}[a-z0-9]$", var.cloud_name))
+    error_message = "cloud_name must not be empty and must match pattern: ^[a-z][-a-z0-9]{0,61}[a-z0-9]$"
   }
 }
