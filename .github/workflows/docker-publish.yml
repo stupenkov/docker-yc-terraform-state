@@ -25,21 +25,45 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install semantic-release and plugins
+    - name: Install commit-analyzer
       run: |
-        npm install --save-dev semantic-release@24 @semantic-release/commit-analyzer@11 @semantic-release/release-notes-generator@12
+        npm install --save-dev @semantic-release/commit-analyzer@11
 
     - name: Determine next version
       id: version
       run: |
-        echo "Determining next version based on conventional commits..."
-        version=$(npx semantic-release --branches=main --dry-run --ci false | grep -oE 'The next release version is v[0-9]+\.[0-9]+\.[0-9]+' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
-        if [ -z "$version" ]; then
-          echo "No release needed based on commit messages"
-          version="0.0.0"
-        fi
+        echo "Analyzing commits to determine next version..."
+        # Use commit-analyzer directly without attempting to push to repository
+        npx @semantic-release/commit-analyzer@11 -i main > /tmp/release-type.json || echo '{"type":"patch"}' > /tmp/release-type.json
+        release_type=$(cat /tmp/release-type.json | grep -o '"type":"[^"]*"' | cut -d'"' -f4)
+
+        # Get current version from git tags
+        current_version=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+        current_version=${current_version#v}
+
+        # Parse version components
+        IFS='.' read -r major minor patch <<< "$current_version"
+
+        # Increment version based on commit type
+        case $release_type in
+          "major")
+            major=$((major + 1))
+            minor=0
+            patch=0
+            ;;
+          "minor")
+            minor=$((minor + 1))
+            patch=0
+            ;;
+          *)
+            patch=$((patch + 1))
+            ;;
+        esac
+
+        version="$major.$minor.$patch"
+        echo "release_type=$release_type" >> $GITHUB_OUTPUT
         echo "version=$version" >> $GITHUB_OUTPUT
-        echo "Version determined: $version"
+        echo "Version determined: $version (from $current_version due to $release_type change)"
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
